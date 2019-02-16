@@ -1,13 +1,14 @@
 import arcade
-import random, math
+import random, math, sys
 
 WIDTH = 800
 HEIGHT = 600
 MOVESPEED = 5
 ANGLESPEED = 5
 
-TEXTLEFT, TEXTRIGHT = 0, 1
-
+# constants holding game states
+GAMERUN = 1
+GAMEOVER = 2
 
 class FallingCoin(arcade.Sprite):
     def update(self):
@@ -38,7 +39,7 @@ class MyGame(arcade.Window):
         super().__init__(width, height)
         arcade.set_background_color(arcade.color.AMAZON)
         # self.set_mouse_visible(False)
-        self.game_running = True
+        self.game_state = 0
 
     def level(self):
         levels = [
@@ -49,8 +50,8 @@ class MyGame(arcade.Window):
         ]
         try:
             coin_type, num_coins = levels[self.level_number]
-        except:
-            self.game_running = False
+        except IndexError:
+            self.game_state = GAMEOVER
             return
         for i in range(num_coins):
             coin = coin_type('bin/gold/gold0.png', scale=0.3)
@@ -70,7 +71,8 @@ class MyGame(arcade.Window):
         self.score = 0
         self.level_number = 0
 
-        # self.player = Player('bin/boehm.jpg', 0.4)
+        # self.fullscreen = False
+
         self.player = arcade.AnimatedWalkingSprite()
         self.player.stand_right_textures = [arcade.load_texture('bin/walk/walking0.png', scale=0.75)]
         self.player.stand_left_textures = [arcade.load_texture('bin/walk/walking0.png', scale=0.75, mirrored=True)]
@@ -86,29 +88,43 @@ class MyGame(arcade.Window):
         # start a level
         self.level()
 
+    def draw_title(self):
+        tex = arcade.load_texture('bin/title.png')
+        arcade.draw_texture_rectangle(WIDTH//2, HEIGHT//2, tex.width, tex.height, tex, 0)
+
     def draw_game_over(self):
         w = WIDTH/4
         arcade.draw_text('Game Over', w, 400, arcade.color.WHITE, 50, width=w*2, align='center')
         arcade.draw_text('Click to Restart', w, 350, arcade.color.WHITE, 24, width=w*2, align='center')
 
     def draw_game(self):
-        if self.game_running:
+        if self.game_state == GAMERUN:
             r, g, b = arcade.color.AMAZON
             output = 'Level {}'.format(self.level_number + 1)
             arcade.draw_text(output, WIDTH/4, 25, (r-15, g-15, b-15), 50, width=WIDTH/2, align='center')
         self.all_sprites.draw()
         output = 'Score: {}'.format(self.score)
         arcade.draw_text(output, 10, HEIGHT-20, arcade.color.WHITE, 14)
+        output = 'Press [q] to quit'
+        arcade.draw_text(output, WIDTH/2-50, HEIGHT-20, arcade.color.WHITE, 12)
+
+        arcade.draw_text('State: {}'.format(self.game_state), 700, HEIGHT-20, arcade.color.WHITE, 14)
 
     def on_draw(self):
         """ Render the screen. """
         arcade.start_render()
-        self.draw_game()
-        if not self.game_running:
+        if not self.game_state:
+            self.draw_title()
+        if self.game_state == GAMERUN:
+            self.draw_game()
+        if self.game_state == GAMEOVER:
+            self.draw_game()
             self.draw_game_over()
 
     def on_key_press(self, key, modifiers):
         SPEED = 5
+        if key == arcade.key.Q:
+            sys.exit(0)
 
         if key == arcade.key.UP:
             self.player.change_y = SPEED
@@ -126,13 +142,15 @@ class MyGame(arcade.Window):
             self.player.change_x = 0
 
     def on_mouse_press(self, x, y, button, modifiers):
-        if not self.game_running:
+        if not self.game_state:
+            self.game_state = GAMERUN
+        if self.game_state == GAMEOVER:
+            self.game_state = GAMERUN
             self.setup()
-            self.game_running = True
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
-        if self.game_running:
+        if self.game_state == GAMERUN:
             self.all_sprites.update()
             self.all_sprites.update_animation()
 
