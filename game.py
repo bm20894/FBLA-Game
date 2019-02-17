@@ -1,5 +1,5 @@
 import arcade
-import random, math, sys
+import random, math, sys, os
 
 WIDTH = 800
 HEIGHT = 600
@@ -36,9 +36,11 @@ class MyGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(file_path)
+
         super().__init__(width, height)
         arcade.set_background_color(arcade.color.AMAZON)
-        # self.set_mouse_visible(False)
         self.game_state = 0
 
     def level(self):
@@ -71,13 +73,11 @@ class MyGame(arcade.Window):
         self.score = 0
         self.level_number = 0
 
-        # self.fullscreen = False
-
         self.player = arcade.AnimatedWalkingSprite()
-        self.player.stand_right_textures = [arcade.load_texture('bin/walk/walking0.png', scale=0.75)]
-        self.player.stand_left_textures = [arcade.load_texture('bin/walk/walking0.png', scale=0.75, mirrored=True)]
-        self.player.walk_right_textures = [arcade.load_texture('bin/walk/walking{}.png'.format(i), scale=0.75) for i in range(6)]
-        self.player.walk_left_textures = [arcade.load_texture('bin/walk/walking{}.png'.format(i), scale=0.75, mirrored=True) for i in range(6)]
+        self.player.stand_right_textures = [arcade.load_texture('bin/boehm_walk/walk_boehm0.png', scale=0.75)]
+        self.player.stand_left_textures = [arcade.load_texture('bin/boehm_walk/walk_boehm0.png', scale=0.75, mirrored=True)]
+        self.player.walk_right_textures = [arcade.load_texture('bin/boehm_walk/walk_boehm{}.png'.format(i), scale=0.75) for i in range(6)]
+        self.player.walk_left_textures = [arcade.load_texture('bin/boehm_walk/walk_boehm{}.png'.format(i), scale=0.75, mirrored=True) for i in range(6)]
         self.player.texture_change_distance = 20
 
         self.player.center_x = WIDTH / 2
