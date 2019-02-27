@@ -8,6 +8,7 @@ MOVESPEED = 5
 # constants holding game states
 GAMERUN = 1
 GAMEOVER = 2
+QUESTION = 3
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -87,6 +88,7 @@ class MyGame(arcade.Window):
         self.score = 0
         self.level_number = 0
         self.question_up = False
+        self.question = None
 
         self.player = arcade.AnimatedWalkingSprite()
 
@@ -102,31 +104,65 @@ class MyGame(arcade.Window):
         self.all_sprites.append(self.player)
 
         # make workers
-        self.make_workers()
+        self.make_worker()
 
         # start a level
         self.level()
         self.physics_engine = arcade.PhysicsEngineSimple(self.player, self.wall_list)
 
-    def make_workers(self):
-        # worker = arcade.Sprite('bin/walk/walk1.png', 0.2)
+    def make_worker(self, previous=None):
         worker = Worker('bin/walk/walk1.png', 0.2)
-        worker.center_x = dim + 10
-        worker.center_y = random.randrange(dim, HEIGHT - dim)
         self.worker_list.append(worker)
         self.all_sprites.append(worker)
 
     def check_worker_collisions(self):
-        pass
-        # for worker in self.worker_list:
-            # if (self.player.left <= worker.right or self.player.right >= worker.left) \
-                    # and (self.player.top >= worker.bottom \
-                    # or self.player.bottom <= worker.top):
-                # self.player.left = worker.right
-    def draw_question(self):
+        p = self.player
+        for worker in self.worker_list:
+           if p.left > worker.right:
+               continue
+           if p.right < worker.left:
+               continue
+           if p.bottom > worker.top:
+               continue
+           if p.top < worker.bottom:
+               continue
+           self.start_question()
+
+    def start_question(self):
+        self.game_state = QUESTION
+        self.get_question()
+
+    def get_question(self):
         worker = self.worker_list[0]
-        arcade.draw_rectangle_filled(worker.center_x - 10, worker.center_y + 20, 50, 20, arcade.color.WHITE)
-        for b in worker.ask_question():
+        coords = worker.center_x, worker.center_y
+        buttons, data = worker.ask_question()
+        # text, value = data
+        for b in buttons:
+            self.button_list.append(b)
+        self.question = {
+            'text': data.text,
+            'answer': data.answer,
+            'value': data.value
+        }
+        # remove worker
+        worker.kill()
+
+        # create another worker
+        self.make_worker(previous=coords)
+
+    def draw_question(self):
+        # draw dialog box with text
+        x, y = 50, HEIGHT / 2
+        w, h = WIDTH - 50 - x, HEIGHT - 50 - y
+        x += w/2
+        y += h/2
+        arcade.draw_rectangle_filled(x, y, w, h, arcade.color.WHITE)
+        arcade.draw_text(self.question['text'], x, y, arcade.color.BLACK, 14, width=w,
+                align='center', anchor_x='center', anchor_y='center')
+
+        if not self.question_up:
+            self.question_up = True
+        for b in self.button_list:
             b.draw()
 
     def draw_title(self):
@@ -143,18 +179,12 @@ class MyGame(arcade.Window):
             r, g, b = arcade.color.AMAZON
             output = 'Level {}'.format(self.level_number + 1)
             arcade.draw_text(output, WIDTH/4, 25 + dim, (r-15, g-15, b-15), 50, width=WIDTH/2, align='center')
-            if self.question_up:
-                self.draw_question()
 
         self.all_sprites.draw()
         output = 'Score: {}'.format(self.score)
         arcade.draw_text(output, 10, HEIGHT-20, arcade.color.WHITE, 14)
         output = 'Press [q] to quit'
         arcade.draw_text(output, WIDTH/2-50, HEIGHT-20, arcade.color.WHITE, 12)
-
-        # draw buttons
-        for button in self.button_list:
-            button.draw()
 
     def on_draw(self):
         """ Render the screen. """
@@ -166,6 +196,8 @@ class MyGame(arcade.Window):
         if self.game_state == GAMEOVER:
             self.draw_game()
             self.draw_game_over()
+        if self.game_state == QUESTION:
+            self.draw_question()
 
     def on_key_press(self, key, modifiers):
         SPEED = 5
@@ -183,7 +215,7 @@ class MyGame(arcade.Window):
 
         # TEST WORKER QUESTIONS
         if key == arcade.key.SPACE:
-            self.question_up = True
+            self.start_question()
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.UP or key == arcade.key.DOWN:
@@ -192,7 +224,8 @@ class MyGame(arcade.Window):
             self.player.change_x = 0
 
     def on_mouse_press(self, x, y, button_num, modifiers):
-        check_press(x, y, self.button_list)
+        if check_press(x, y, self.button_list):
+            self.game_state = QUESTION
         if not self.game_state:
             self.game_state = GAMERUN
         if self.game_state == GAMEOVER:
@@ -200,23 +233,27 @@ class MyGame(arcade.Window):
             self.setup()
 
     def on_mouse_release(self, x, y, button_num, modifiers):
-        check_release(x, y, self.button_list)
+        data = check_release(x, y, self.button_list)
+        if data and self.game_state == QUESTION:
+            # reward player for answer
+            reward = self.question['value'][data.type]
+            print('Button pressed: {}'.format(data.type))
+            self.score += reward
+            self.game_state = GAMERUN
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
         if self.game_state == GAMERUN:
             self.coin_list.update()
-            self.wall_list.update()
             self.physics_engine.update()
-            # self.all_sprites.update()
-            self.all_sprites.update_animation()
+            self.player.update_animation()
 
             hit_list = arcade.check_for_collision_with_list(self.player, self.coin_list)
             for coin in hit_list:
                 coin.kill()
                 self.score += 1
 
-            # self.check_worker_collisions()
+            self.check_worker_collisions()
 
             # check for level change
             if len(self.coin_list) == 0:
