@@ -6,9 +6,13 @@ HEIGHT = 600
 scale = 0.4
 dim = int(scale * 200)
 
-mult = 100
+mult = 50
+margin = 100
+coin_prob = 100
 
+from .player import Player
 from .coin import FallingCoin, RisingCoin, BouncingCoin
 from .question import questions
-from .button import YesButton, NoButton, check_press, check_release
+from .button import Button, check_press, check_release
 from .worker import Worker
+from .graph import graph

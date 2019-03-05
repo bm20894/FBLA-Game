@@ -79,18 +79,13 @@ def check_release(x, y, button_list):
             b.on_release()
             return b
 
-class YesButton(TextButton):
-    def __init__(self, cx, cy):
-        super().__init__(cx, cy, 100, 40, 'Yes')
-        self.type = 'yes'
+class Button(TextButton):
+    def __init__(self, cx, cy, lbl):
+        super().__init__(cx, cy, 100, 40, lbl)
+        self.lbl = lbl
 
     def on_release(self):
         super().on_release()
 
-class NoButton(TextButton):
-    def __init__(self, cx, cy):
-        super().__init__(cx, cy, 100, 40, 'No')
-        self.type = 'no'
-
-    def on_release(self):
-        super().on_release()
+    def __repr__(self):
+        return '<Button "{}">'.format(self.lbl)
