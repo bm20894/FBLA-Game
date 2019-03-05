@@ -27,7 +27,7 @@ def graph(points, game):
         arcade.color.BLACK, 5)
 
     xspc, yspc = int(w/5), int(h/5)
-    xbin, ybin = 1, 200
+    xbin, ybin = 1, 400
 
     # ticks
     n = 1
@@ -45,13 +45,13 @@ def graph(points, game):
         arcade.draw_line(origin[0]-10, j, origin[0]+10, j,
             arcade.color.BLACK, 3)
         msg = '${}'.format(ybin * n)
-        arcade.draw_text(msg, origin[0]-30, j,
+        arcade.draw_text(msg, origin[0]-40, j,
                 arcade.color.BLACK, font_size=10, width=20,
                 align='center', anchor_x='center', anchor_y='center')
         n += 1
 
     # draw point
-    coords = [(origin[0], origin[1] + STARTSCORE/2)]
+    coords = [(origin[0], origin[1] + STARTSCORE/4)]
     for x, p in enumerate(points):
         x += 1
         y = p / ybin

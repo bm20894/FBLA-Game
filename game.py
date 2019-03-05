@@ -8,11 +8,11 @@ import arcade
 import random, math, sys, os
 from utils import (FallingCoin, RisingCoin, BouncingCoin,
         WIDTH, HEIGHT, scale, dim, Worker, check_press, check_release,
-        graph, coin_prob, Player, Button, STARTSCORE)
+        graph, coin_prob, Player, Button, STARTSCORE, COINSCORE)
 from utils import questions
 
 MOVESPEED = 5
-TIMELIMIT = 8
+TIMELIMIT = 30
 
 # constants holding game states
 GAMERUN = 1
@@ -102,13 +102,11 @@ class MyGame(arcade.Window):
             wall = arcade.Sprite('bin/wall.jpg', scl)
             wall.center_x, wall.center_y = 2.5*dim, y + dim/2 - d/2
             self.cubicle_list.append(wall)
-            # self.all_sprites.append(wall)
 
         for y in range(int(HEIGHT-d), HEIGHT-int(1.5*dim)+1, int(-d)):
             wall = arcade.Sprite('bin/wall.jpg', scl)
             wall.center_x, wall.center_y = WIDTH - 2.5*dim, y - dim/2 + d/2
             self.cubicle_list.append(wall)
-            # self.all_sprites.append(wall)
 
     def cube_two(self):
         comp = arcade.Sprite('bin/other/comp.png', 0.05)
@@ -116,30 +114,51 @@ class MyGame(arcade.Window):
         comp.angle = 90
         self.wall_list.append(comp)
 
+        comp = arcade.Sprite('bin/other/comp.png', 0.05)
+        comp.center_x, comp.center_y = dim - 20, HEIGHT - 505
+        comp.angle = 90
+        self.wall_list.append(comp)
+
     def cube_three(self):
+        comp = arcade.Sprite('bin/other/comp.png', 0.05)
+        comp.center_x, comp.center_y = WIDTH - 60, HEIGHT - 505
+        comp.angle = -90
+        self.wall_list.append(comp)
+
+        comp = arcade.Sprite('bin/other/comp.png', 0.05)
+        comp.center_x, comp.center_y = 60, HEIGHT - 65
+        comp.angle = 90
+        self.wall_list.append(comp)
+
+        comp = arcade.Sprite('bin/other/comp.png', 0.05)
+        comp.center_x, comp.center_y = 240, HEIGHT - 65
+        comp.angle = 90
+        self.wall_list.append(comp)
+
+        comp = arcade.Sprite('bin/other/comp.png', 0.05)
+        comp.center_x, comp.center_y = 440, HEIGHT - 65
+        comp.angle = 90
+        self.wall_list.append(comp)
+
         for y in range(int(d), int(1.5*dim), int(d)):
             wall = arcade.Sprite('bin/wall.jpg', scl)
             wall.center_x, wall.center_y = 2.5*dim, HEIGHT - (y + dim/2 - d/2)
             self.cubicle_list.append(wall)
-            # self.all_sprites.append(wall)
 
         for y in range(int(d), int(1.5*dim), int(d)):
             wall = arcade.Sprite('bin/wall.jpg', scl)
             wall.center_x, wall.center_y = WIDTH/2 , HEIGHT - (y + dim/2 - d/2)
             self.cubicle_list.append(wall)
-            # self.all_sprites.append(wall)
 
         for y in range(int(HEIGHT-d), HEIGHT-int(1.5*dim)+1, int(-d)):
             wall = arcade.Sprite('bin/wall.jpg', scl)
             wall.center_x, wall.center_y = WIDTH - 2.5*dim, HEIGHT - (y - dim/2 + d/2)
             self.cubicle_list.append(wall)
-            # self.all_sprites.append(wall)
 
     def cube_four(self):
         water = arcade.Sprite('bin/other/water.png', 0.2)
         water.center_x, water.center_y = WIDTH/2, dim + 12
         self.cubicle_list.append(water)
-
 
     def make_cubicles(self):
         self.cubicle_list = arcade.SpriteList()
@@ -174,7 +193,6 @@ class MyGame(arcade.Window):
         ]
 
         self.player = Player(player_images)
-        # self.all_sprites.append(self.player)
 
         # start a level
         self.level()
@@ -274,16 +292,6 @@ class MyGame(arcade.Window):
             output = 'Quarter {}'.format(self.level_number + 1)
             arcade.draw_text(output, WIDTH/4, 25 + dim, (r-15, g-15, b-15), 50, width=WIDTH/2, align='center')
 
-        # all_sprites = arcade.SpriteList()
-        # for c in self.coin_list:
-            # all_sprites.append(c)
-        # for c in self.wall_list:
-            # all_sprites.append(c)
-        # for c in self.cubicle_list:
-            # all_sprites.append(c)
-        # for c in self.worker_list:
-            # all_sprites.append(c)
-        # all_sprites.draw()
         self.player.draw()
 
         self.all_sprites.draw()
@@ -373,12 +381,8 @@ class MyGame(arcade.Window):
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
-        # walls, cubicles need to be removed from all_sprites list
         if self.timing:
             self.time -= delta_time
-            # print(len(self.all_sprites))
-            # print('walls: {}'.format(len(self.wall_list)))
-            # print('cubicles: {}'.format(len(self.cubicle_list)))
         if self.time <= 0:
             # show quarter update and go to next level
             self.game_state = GRAPH
@@ -390,7 +394,7 @@ class MyGame(arcade.Window):
             self.coin_list.update()
 
             # make workers
-            if random.randrange(coin_prob) == 0:
+            if random.randrange(coin_prob*3) == 0:
                 self.make_worker()
 
             self.all_sprites.update()
@@ -402,7 +406,7 @@ class MyGame(arcade.Window):
             hit_list = arcade.check_for_collision_with_list(self.player, self.coin_list)
             for coin in hit_list:
                 coin.kill()
-                self.score += 1
+                self.score += COINSCORE
 
             self.check_worker_collisions()
 

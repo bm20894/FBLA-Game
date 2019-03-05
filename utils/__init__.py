@@ -10,6 +10,7 @@ mult = 50
 margin = 100
 coin_prob = 100
 STARTSCORE = 500
+COINSCORE = 10
 
 from .player import Player
 from .coin import FallingCoin, RisingCoin, BouncingCoin

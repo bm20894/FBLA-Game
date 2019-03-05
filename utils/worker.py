@@ -26,11 +26,11 @@ class Worker(arcade.Sprite):
 
     @classmethod
     def get_coords(cls, level_number):
-        right_side = cls.coords + [(728, 515), (641, 85)]
-        cooler = right_side + [(WIDTH/2 - 50, dim + 15)]
+        level_3 = cls.coords + [(558, 515), (641, 85), (358, 515), (542, 515), (158, 515)]
+        cooler = level_3 + [(WIDTH/2 - 50, dim + 15)]
         c = cls.coords
-        if level_number == 2:
-            c = right_side
-        elif level_number == 3:
+        if level_number+1 == 3:
+            c = level_3
+        elif level_number+1 == 4:
             c = cooler
         return random.choice(c)
