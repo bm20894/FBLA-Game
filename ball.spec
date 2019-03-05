@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['game.py'],
+a = Analysis(['ball.py'],
              pathex=['/home/miles/projects/fbla/FBLA-Game'],
              binaries=[],
              datas=[],
@@ -19,14 +19,18 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
-          a.binaries,
-          a.zipfiles,
-          a.datas,
           [],
-          name='game',
+          exclude_binaries=True,
+          name='ball',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          runtime_tmpdir=None,
           console=False )
+coll = COLLECT(exe,
+               a.binaries,
+               a.zipfiles,
+               a.datas,
+               strip=False,
+               upx=True,
+               name='ball')
