@@ -8,12 +8,11 @@ import arcade
 import random, math, sys, os
 from utils import (FallingCoin, RisingCoin, BouncingCoin,
         WIDTH, HEIGHT, scale, dim, Worker, check_press, check_release,
-        graph, coin_prob, Player, Button)
-from test import no_print, backspace
+        graph, coin_prob, Player, Button, STARTSCORE)
 from utils import questions
 
 MOVESPEED = 5
-TIMELIMIT = 25
+TIMELIMIT = 8
 
 # constants holding game states
 GAMERUN = 1
@@ -75,6 +74,8 @@ class MyGame(arcade.Window):
         self.coin_list.append(coin)
 
     def make_walls(self):
+        for w in self.wall_list:
+            self.all_sprites.remove(w)
         self.wall_list = arcade.SpriteList()
         for x in range(0, WIDTH, dim):
             wall_t = arcade.Sprite('bin/wall.jpg', scale)
@@ -105,27 +106,32 @@ class MyGame(arcade.Window):
 
         for y in range(int(HEIGHT-d), HEIGHT-int(1.5*dim)+1, int(-d)):
             wall = arcade.Sprite('bin/wall.jpg', scl)
-            wall.center_x, wall.center_y = 2.5*dim, y - dim/2 + d/2
+            wall.center_x, wall.center_y = WIDTH - 2.5*dim, y - dim/2 + d/2
             self.cubicle_list.append(wall)
             # self.all_sprites.append(wall)
 
     def cube_two(self):
         comp = arcade.Sprite('bin/other/comp.png', 0.05)
-        # (158, 95), (70, 515)
-        comp.center_x, comp.center_y = 165, 535
-        comp.angle = -90
+        comp.center_x, comp.center_y = WIDTH - 165, 535
+        comp.angle = 90
         self.wall_list.append(comp)
 
     def cube_three(self):
-        for y in range(int(d), int(1.5*dim)+1, int(d)):
+        for y in range(int(d), int(1.5*dim), int(d)):
             wall = arcade.Sprite('bin/wall.jpg', scl)
-            wall.center_x, wall.center_y = WIDTH - 2.5*dim, y + dim/2 - d/2
+            wall.center_x, wall.center_y = 2.5*dim, HEIGHT - (y + dim/2 - d/2)
+            self.cubicle_list.append(wall)
+            # self.all_sprites.append(wall)
+
+        for y in range(int(d), int(1.5*dim), int(d)):
+            wall = arcade.Sprite('bin/wall.jpg', scl)
+            wall.center_x, wall.center_y = WIDTH/2 , HEIGHT - (y + dim/2 - d/2)
             self.cubicle_list.append(wall)
             # self.all_sprites.append(wall)
 
         for y in range(int(HEIGHT-d), HEIGHT-int(1.5*dim)+1, int(-d)):
             wall = arcade.Sprite('bin/wall.jpg', scl)
-            wall.center_x, wall.center_y = WIDTH - 2.5*dim, y - dim/2 + d/2
+            wall.center_x, wall.center_y = WIDTH - 2.5*dim, HEIGHT - (y - dim/2 + d/2)
             self.cubicle_list.append(wall)
             # self.all_sprites.append(wall)
 
@@ -151,10 +157,10 @@ class MyGame(arcade.Window):
         self.worker_list = arcade.SpriteList()
         self.button_list = []
 
-        self.score = 0
+        self.score = STARTSCORE
         self.coin_type = arcade.Sprite
         self.level_scores = []
-        self.level_number = 3
+        self.level_number = 0
         self.question_up = False
         self.question = None
         self.graphing = False
@@ -193,7 +199,6 @@ class MyGame(arcade.Window):
                 return
 
         self.worker_list.append(worker)
-        # print('workers: {}'.format(len(self.worker_list)))
         self.all_sprites.append(worker)
 
     def check_worker_collisions(self):
@@ -283,6 +288,7 @@ class MyGame(arcade.Window):
 
         self.all_sprites.draw()
         self.cubicle_list.draw()
+        self.coin_list.draw()
 
         output = 'Balance: ${}'.format(self.score)
         arcade.draw_text(output, 10, HEIGHT-20, arcade.color.WHITE, 14)
@@ -371,6 +377,8 @@ class MyGame(arcade.Window):
         if self.timing:
             self.time -= delta_time
             # print(len(self.all_sprites))
+            # print('walls: {}'.format(len(self.wall_list)))
+            # print('cubicles: {}'.format(len(self.cubicle_list)))
         if self.time <= 0:
             # show quarter update and go to next level
             self.game_state = GRAPH
@@ -382,7 +390,7 @@ class MyGame(arcade.Window):
             self.coin_list.update()
 
             # make workers
-            if random.randrange(coin_prob/2) == 0:
+            if random.randrange(coin_prob) == 0:
                 self.make_worker()
 
             self.all_sprites.update()
@@ -405,9 +413,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # for q in questions:
-        # print(q)
-        # vals = [v for v in q.buttons]
-        # for i, v in enumerate(vals):
-            # b = Button(WIDTH/(i+1)*len(q.buttons), 300, v)
-            # print(b)

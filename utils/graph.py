@@ -3,7 +3,7 @@ Graph Module
 display a graph on screen with multiple points
 '''
 import arcade
-from . import WIDTH, HEIGHT, margin
+from . import WIDTH, HEIGHT, margin, STARTSCORE
 
 def graph(points, game):
     arcade.set_background_color(arcade.color.LIGHT_BLUE)
@@ -27,7 +27,7 @@ def graph(points, game):
         arcade.color.BLACK, 5)
 
     xspc, yspc = int(w/5), int(h/5)
-    xbin, ybin = 1, 100
+    xbin, ybin = 1, 200
 
     # ticks
     n = 1
@@ -41,7 +41,7 @@ def graph(points, game):
         n += 1
 
     n = 1
-    for j in range(int(origin[1]) + yspc, int(h+margin/2), yspc):
+    for j in range(int(origin[1]) + yspc, int(h+margin/2) + 1, yspc):
         arcade.draw_line(origin[0]-10, j, origin[0]+10, j,
             arcade.color.BLACK, 3)
         msg = '${}'.format(ybin * n)
@@ -51,10 +51,10 @@ def graph(points, game):
         n += 1
 
     # draw point
-    coords = [(origin[0], origin[1])]
+    coords = [(origin[0], origin[1] + STARTSCORE/2)]
     for x, p in enumerate(points):
         x += 1
-        y = p / 100
+        y = p / ybin
         x = x * xspc
         y = y * yspc
         x += origin[0]
@@ -66,7 +66,6 @@ def graph(points, game):
                 align='center', anchor_x='center', anchor_y='center')
         coords.append((x, y))
 
-    # coords.insert(0, (0, 0))
     for i, point in enumerate(coords[1:]):
         old = coords[i]
         arcade.draw_line(point[0], point[1], old[0], old[1], arcade.color.RED, 5)

@@ -2,7 +2,7 @@ import arcade, random
 from . import WIDTH, HEIGHT, questions, Button, dim, margin
 
 class Worker(arcade.Sprite):
-    coords = [(158, 95), (70, 515)]
+    coords = [(158, 95), (730, 515)]
     def __init__(self):
         imgs = [('bin/walk/walk1.png', 0.2), ('bin/worker2.jpg', 0.1)]
         image, scale = random.choice(imgs)
@@ -14,7 +14,6 @@ class Worker(arcade.Sprite):
     def ask_question(self):
         q = random.choice(questions)
 
-        print(q.buttons)
         buttons = []
         vals = [v for v in q.buttons]
         for i, v in enumerate(vals):
@@ -30,7 +29,6 @@ class Worker(arcade.Sprite):
         right_side = cls.coords + [(728, 515), (641, 85)]
         cooler = right_side + [(WIDTH/2 - 50, dim + 15)]
         c = cls.coords
-        print(level_number)
         if level_number == 2:
             c = right_side
         elif level_number == 3:

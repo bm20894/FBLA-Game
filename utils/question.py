@@ -2,7 +2,7 @@
 Question class
 """
 import json, os
-from . import mult
+from . import data, mult
 
 class Question:
     def __init__(self, text, buttons):
@@ -18,8 +18,8 @@ class Question:
         msg = self.text[:20] + '...'
         return '<Question: {}>'.format(self.buttons)
 
-file_path = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(file_path, 'question.json')) as f:
-    data = json.load(f)
+# file_path = os.path.dirname(os.path.abspath(__file__))
+# with open(os.path.join(file_path, 'question.json')) as f:
+    # data = json.load(f)
 
 questions = [Question(**q) for q in data]
