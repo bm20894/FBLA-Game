@@ -28,3 +28,5 @@ In order to play the game, this repository's code must be installed first. To do
 	- If the above instructions were followed carefully and correctly, a terminal window will appear, followed shortly by the game window.
 
 *Note*: The black terminal window does need to remain open while playing the game, if it is closed, the game will close too.
+
+**If a problem occurs**: Chances are, a path is incorrect. If you skipped the Python 3.7.2 installation and continued with Downloading the Repository Code, install Python 3.7.2 using the link provided in Step 1 above.
