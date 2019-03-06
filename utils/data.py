@@ -1,6 +1,6 @@
 data = [
 {
-    "text": "P&L stands for:\nA: Process and Lags\nB: Pass-Through Income and Liability\nC: Profit and Loss",
+    "text": "P&L stands for:\n\nA: Process and Lags\nB: Pass-Through Income and Liability\nC: Profit and Loss",
         "buttons": {
                 "A": -1,
                 "B": -1,
@@ -15,7 +15,7 @@ data = [
         }
 },
 {
-    "text": "A type of legal business entity is a:\nA: LNC\nB: LLC\nC: BNC\nD: L&E",
+    "text": "A type of legal business entity is a:\n\nA: LNC\nB: LLC\nC: BNC\nD: L&E",
         "buttons": {
                 "A": -1,
                 "B": 1,
@@ -24,7 +24,7 @@ data = [
         }
 },
 {
-    "text": "A source of investment funding for your business is:\nA: VC / Venture Capital\nB: Anglers\nC: 529 Loan",
+    "text": "A source of investment funding for your business is:\n\nA: VC / Venture Capital\nB: Anglers\nC: 529 Loan",
         "buttons": {
                 "A": 1,
                 "B": -1,
@@ -39,7 +39,7 @@ data = [
         }
 },
 {
-    "text": "Which of the following is issued to employees for tax filing?\nA: W2\nB: 401k\nC: 1099\nD: 5013c",
+    "text": "Which of the following is issued to employees for tax filing?\n\nA: W2\nB: 401k\nC: 1099\nD: 5013c",
         "buttons": {
                 "A": 1,
                 "B": -1,
@@ -48,7 +48,7 @@ data = [
         }
 },
 {
-    "text": "Product margin is calculated from the ratio of:\nA: Price and Cost\nB: Revenue minus Returns\nC: Sales minus taxes",
+    "text": "Product margin is calculated from the ratio of:\n\nA: Price and Cost\nB: Revenue minus Returns\nC: Sales minus taxes",
         "buttons": {
                 "A": 1,
                 "B": -1,
@@ -56,7 +56,7 @@ data = [
         }
 },
 {
-        "text": "Inventory flow is best managed:\nA: Quarterly\nB: Seasonally\nC: Up front\nD: Based on demand",
+        "text": "Inventory flow is best managed:\n\nA: Quarterly\nB: Seasonally\nC: Up front\nD: Based on demand",
         "buttons": {
                 "A": -1,
                 "B": -1,

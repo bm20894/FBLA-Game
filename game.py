@@ -26,11 +26,11 @@ d = scl * 200
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, title):
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
 
-        super().__init__(width, height)
+        super().__init__(width, height, title)
         self.game_state = 0
         self.coin_list = None
 
@@ -251,7 +251,6 @@ class MyGame(arcade.Window):
             self.button_list.append(b)
         self.question = {
             'text': data.text,
-            'answer': data.answer,
             'buttons': data.buttons
         }
         # remove worker
@@ -299,14 +298,14 @@ class MyGame(arcade.Window):
         self.coin_list.draw()
 
         output = 'Balance: ${}'.format(self.score)
-        arcade.draw_text(output, 10, HEIGHT-20, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, HEIGHT-20, arcade.color.WHITE, 18)
         output = 'Press [q] to quit'
-        arcade.draw_text(output, WIDTH/2-50, HEIGHT-20, arcade.color.WHITE, 12)
+        arcade.draw_text(output, WIDTH/2-50, HEIGHT-20, arcade.color.WHITE, 14)
         self.draw_time()
 
     def draw_time(self):
         output = 'Time: {:.0f}'.format(self.time)
-        arcade.draw_text(output, WIDTH-100, HEIGHT-20, arcade.color.WHITE, 14)
+        arcade.draw_text(output, WIDTH-115, HEIGHT-20, arcade.color.WHITE, 18)
 
     def on_draw(self):
         """ Render the screen. """
@@ -394,7 +393,7 @@ class MyGame(arcade.Window):
             self.coin_list.update()
 
             # make workers
-            if random.randrange(coin_prob*3) == 0:
+            if random.randrange(coin_prob*2) == 0:
                 self.make_worker()
 
             self.all_sprites.update()
@@ -411,7 +410,7 @@ class MyGame(arcade.Window):
             self.check_worker_collisions()
 
 def main():
-    game = MyGame(WIDTH, HEIGHT)
+    game = MyGame(WIDTH, HEIGHT, 'FBLA')
     game.setup()
     arcade.run()
 

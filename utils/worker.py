@@ -4,7 +4,7 @@ from . import WIDTH, HEIGHT, questions, Button, dim, margin
 class Worker(arcade.Sprite):
     coords = [(158, 95), (730, 515)]
     def __init__(self):
-        imgs = [('bin/walk/walk1.png', 0.2), ('bin/worker2.jpg', 0.1)]
+        imgs = [('bin/walk/walk1.png', 0.2), ('bin/worker3.png', 0.4)]
         image, scale = random.choice(imgs)
 
         super().__init__(image, scale)

@@ -11,8 +11,6 @@ class Question:
 
         # find answer
         vals = buttons.values()
-        self.answer = list(buttons.keys())[list(vals).index(max(vals))]
-        self.text += '\n\nAnswer: {}'.format(self.answer)
 
     def __repr__(self):
         msg = self.text[:20] + '...'
